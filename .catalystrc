@@ -1,0 +1,30 @@
+{
+  "defaults": {
+    "project": 1,
+    "env": 1
+  },
+  "actives": {
+    "project": 1,
+    "env": 1
+  },
+  "projects": [
+    {
+      "idx": 1,
+      "id": "52400000000015026",
+      "name": "Sample-NodeJs",
+      "domain": {
+        "id": "50043599839",
+        "name": "sample-nodejs-60076195792.development"
+      },
+      "timezone": "Asia/Kolkata",
+      "env": [
+        {
+          "idx": 1,
+          "id": "60076195792",
+          "name": "Development",
+          "type": 3
+        }
+      ]
+    }
+  ]
+}

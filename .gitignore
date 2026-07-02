@@ -1,0 +1,52 @@
+# Dependencies (frontend and all functions)
+node_modules/
+**/node_modules/
+.pnp/
+.pnp.js
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Build output
+.build/
+build/
+dist/
+**/build/
+**/dist/
+
+# Test and coverage output
+coverage/
+**/coverage/
+.nyc_output/
+**/.nyc_output/
+
+# Caches and temporary files
+.cache/
+**/.cache/
+.tmp/
+**/.tmp/
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+Desktop.ini
