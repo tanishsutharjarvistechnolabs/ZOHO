@@ -5,6 +5,7 @@ const axiosInstance = axios.create({
   baseURL: '/server/sample_node_js_function',
   headers: { 'Content-Type': 'application/json' },
   timeout: 10000,
+  withCredentials: true,
 });
 
 // ─── Request Interceptor ───────────────────────────────────────────────────────
@@ -46,10 +47,10 @@ axiosInstance.interceptors.response.use(
         }
 
         // Handle session expiry (440)
-        if (errResp.data.statusCode === 440) {
+        if (errResp.status === 401 || errResp.status === 440 || errResp.data.statusCode === 440) {
           console.warn('Session expired. Redirecting to login...');
           setTimeout(() => {
-            window.location.href = '/';
+            window.location.assign('/__catalyst/auth/login');
           }, 1500);
         }
 
@@ -100,7 +101,7 @@ export const APIUpdateTodo = async (
   id: string,
   payload: UpdateTodoPayload
 ): Promise<AxiosResponse> => {
-  return axiosInstance.post(`/todos/${id}`, payload);
+  return axiosInstance.put(`/todos/${id}`, payload);
 };
 
 export const APIDeleteTodo = async (id: string): Promise<AxiosResponse> => {

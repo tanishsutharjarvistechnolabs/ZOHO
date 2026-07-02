@@ -7,6 +7,7 @@ import {
   APIDeleteTodo,
 } from '../services/api.service';
 import './TodoApp.css';
+import { useAuth } from '../store/AuthContext';
 
 type Filter = 'all' | 'active' | 'done';
 
@@ -15,6 +16,11 @@ interface Todo {
   title: string;
   description: string;
   done: boolean;
+}
+
+interface CatalystUser {
+  email_id?: string;
+  first_name?: string;
 }
 
 function toTodo(row: CatalystRow): Todo {
@@ -27,6 +33,8 @@ function toTodo(row: CatalystRow): Todo {
 }
 
 export default function TodoApp() {
+  const { user, logout } = useAuth();
+  const authenticatedUser = user as CatalystUser | null;
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -99,6 +107,24 @@ export default function TodoApp() {
   return (
     <div className="app">
       <h1>Todo List</h1>
+      <div className="user-bar">
+        <div className="user-avatar" aria-hidden="true">
+          {(authenticatedUser?.first_name ??
+            authenticatedUser?.email_id ??
+            'C').charAt(0).toUpperCase()}
+        </div>
+        <div className="user-details">
+          <span className="user-label">Signed in as</span>
+          <strong className="user-name">
+            {authenticatedUser?.email_id ??
+              authenticatedUser?.first_name ??
+              'Catalyst user'}
+          </strong>
+        </div>
+        <button className="logout-button" type="button" onClick={logout}>
+          Sign out
+        </button>
+      </div>
 
       <div className="add-form">
         <div className="add-row">
