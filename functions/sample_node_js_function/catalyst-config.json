@@ -6,6 +6,6 @@
 		"env_variables": {}
 	},
 	"execution": {
-		"main": "index.js"
+		"main": "dist/index.js"
 	}
 }

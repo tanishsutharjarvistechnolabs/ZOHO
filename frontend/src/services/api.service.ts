@@ -69,10 +69,13 @@ axiosInstance.interceptors.response.use(
 );
 
 export interface CatalystRow {
-  ROWID: string;
-  Title: string;
-  Description: string;
-  Completed: boolean;
+  _id?: string;
+  title: string;
+  description?: string;
+  completed?: boolean;
+  isDeleted?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface CreateTodoPayload {

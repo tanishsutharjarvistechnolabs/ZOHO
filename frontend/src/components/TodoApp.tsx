@@ -12,24 +12,15 @@ import { useAuth } from '../store/AuthContext';
 type Filter = 'all' | 'active' | 'done';
 
 interface Todo {
-  id: string;
+  _id: string;
   title: string;
   description: string;
-  done: boolean;
+  completed: boolean;
 }
 
 interface CatalystUser {
   email_id?: string;
   first_name?: string;
-}
-
-function toTodo(row: CatalystRow): Todo {
-  return {
-    id: String(row.ROWID),
-    title: row.Title,
-    description: row.Description ?? '',
-    done: row.Completed ?? false,
-  };
 }
 
 export default function TodoApp() {
@@ -50,8 +41,8 @@ export default function TodoApp() {
     setError('');
     try {
       const { data } = await APIGetTodos();
-      const rows: CatalystRow[] = Array.isArray(data) ? data : (data as any).Todos ?? [];
-      setTodos(rows.map(toTodo));
+      const rows: CatalystRow[] = Array.isArray(data) ? data : (data as any).data ?? [];
+      setTodos(rows as Todo[]);
     } catch (e: any) {
       setError(e.message ?? 'Could not load todos.');
     } finally {
@@ -76,14 +67,14 @@ export default function TodoApp() {
   };
 
   const toggle = async (t: Todo) => {
-    setTodos(prev => prev.map(x => x.id === t.id ? { ...x, done: !x.done } : x));
+    setTodos(prev => prev.map(x => x._id === t._id ? { ...x, completed: !x.completed } : x));
     try {
-      await APIUpdateTodo(t.id, { completed: !t.done });
+      await APIUpdateTodo(t._id, { completed: !t.completed });
     } catch { await load(); }
   };
 
   const remove = async (id: string) => {
-    setTodos(prev => prev.filter(x => x.id !== id));
+    setTodos(prev => prev.filter(x => x._id !== id));
     try { await APIDeleteTodo(id); }
     catch { await load(); }
   };
@@ -92,7 +83,7 @@ export default function TodoApp() {
     const title = editTitle.trim();
     const description = editDesc.trim();
     if (title) {
-      setTodos(prev => prev.map(x => x.id === id ? { ...x, title, description } : x));
+      setTodos(prev => prev.map(x => x._id === id ? { ...x, title, description } : x));
       try { await APIUpdateTodo(id, { title, description }); }
       catch { await load(); }
     }
@@ -100,9 +91,9 @@ export default function TodoApp() {
   };
 
   const visible = todos.filter(t =>
-    filter === 'active' ? !t.done : filter === 'done' ? t.done : true
+    filter === 'active' ? !t.completed : filter === 'done' ? t.completed : true
   );
-  const remaining = todos.filter(t => !t.done).length;
+  const remaining = todos.filter(t => !t.completed).length;
 
   return (
     <div className="app">
@@ -166,21 +157,21 @@ export default function TodoApp() {
       ) : (
         <ul className="todo-list">
           {visible.map(todo => (
-            <li key={todo.id} className={todo.done ? 'done' : ''}>
+            <li key={todo._id} className={todo.completed ? 'done' : ''}>
               <input
                 type="checkbox"
-                checked={todo.done}
+                checked={todo.completed}
                 onChange={() => toggle(todo)}
               />
 
-              {editingId === todo.id ? (
+              {editingId === todo._id ? (
                 <div className="edit-wrap">
                   <input
                     className="edit-input"
                     value={editTitle}
                     onChange={e => setEditTitle(e.target.value)}
                     onKeyDown={e => {
-                      if (e.key === 'Enter') saveEdit(todo.id);
+                      if (e.key === 'Enter') saveEdit(todo._id);
                       if (e.key === 'Escape') setEditingId(null);
                     }}
                     placeholder="Title"
@@ -191,18 +182,18 @@ export default function TodoApp() {
                     value={editDesc}
                     onChange={e => setEditDesc(e.target.value)}
                     onKeyDown={e => {
-                      if (e.key === 'Enter') saveEdit(todo.id);
+                      if (e.key === 'Enter') saveEdit(todo._id);
                       if (e.key === 'Escape') setEditingId(null);
                     }}
                     placeholder="Description"
-                    onBlur={() => saveEdit(todo.id)}
+                    onBlur={() => saveEdit(todo._id)}
                   />
                 </div>
               ) : (
                 <div
                   className="todo-content"
                   onDoubleClick={() => {
-                    setEditingId(todo.id);
+                    setEditingId(todo._id);
                     setEditTitle(todo.title);
                     setEditDesc(todo.description);
                   }}
@@ -214,7 +205,7 @@ export default function TodoApp() {
                 </div>
               )}
 
-              <button className="del" onClick={() => remove(todo.id)}>✕</button>
+              <button className="del" onClick={() => remove(todo._id)}>✕</button>
             </li>
           ))}
         </ul>

@@ -1,10 +1,22 @@
 {
 	"name": "sample_node_js_function",
 	"version": "1.0.0",
-	"main": "index.js",
+	"main": "dist/index.js",
 	"author": "info@jarvistechnolabs.com",
+	"scripts": {
+		"build": "tsc",
+		"dev": "ts-node index.ts"
+	},
 	"dependencies": {
+		"dotenv": "^17.4.2",
 		"express": "^5.2.1",
+		"mongoose": "^9.7.3",
 		"zcatalyst-sdk-node": "latest"
+	},
+	"devDependencies": {
+		"@types/express": "^5.0.0",
+		"@types/node": "^26.1.0",
+		"ts-node": "^10.9.2",
+		"typescript": "^6.0.3"
 	}
 }
